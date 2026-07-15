@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Axiom-Apps — Competitive Intelligence</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="googlebot" content="noindex, nofollow">
+<meta name="CCBot" content="noindex, nofollow">
+<meta name="GPTBot" content="noindex, nofollow">
+<meta name="anthropic-ai" content="noindex, nofollow">
+<meta name="PerplexityBot" content="noindex, nofollow">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+  :root {
+    --axiom-blue: #1A5C86;
+    --deep-navy: #0F3750;
+    --signal-amber: #D9772B;
+    --navy-900: #0F3750;
+    --blue-700: #1A5C86;
+    --blue-500: #477C9E;
+    --blue-300: #759DB6;
+    --blue-200: #A3BDCE;
+    --blue-50: #E8EEF2;
+    --ink: #171412;
+    --charcoal: #3D3A37;
+    --grey-600: #6B7280;
+    --grey-400: #9CA3AF;
+    --grey-200: #E5E7EB;
+    --off-white: #FAF8F5;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: var(--off-white);
+    color: var(--charcoal);
+    min-height: 100vh;
+  }
+  header {
+    position: sticky; top: 0; z-index: 100;
+    display: flex; align-items: center; gap: 14px;
+    padding: 16px 28px;
+    background: var(--deep-navy);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+  header a.logo-link { display: flex; align-items: center; gap: 10px; text-decoration: none; color: inherit; }
+  header .logo-img { height: 30px; width: auto; display: block; }
+  header .tool-label { color: var(--blue-200); font-size: 0.85rem; margin-left: 4px; letter-spacing: 0.3px; }
+  .pdf-btn {
+    margin-left: auto;
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.3);
+    color: #ffffff;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .pdf-btn:hover { background: rgba(255,255,255,0.1); }
+  @media print { header { display: none; } }
+
+  main { position: relative; z-index: 1; max-width: 1180px; margin: 0 auto; padding: 28px 24px 80px; }
+
+  .product-select-wrap { display: flex; justify-content: center; margin-bottom: 22px; }
+  select.product-select {
+    background: #ffffff;
+    border: 1px solid var(--grey-200);
+    color: var(--ink);
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    min-width: 260px;
+    font-family: inherit;
+  }
+
+  .tabbar {
+    display: flex; gap: 6px; justify-content: center;
+    margin-bottom: 30px; flex-wrap: wrap;
+    border-bottom: 1px solid var(--grey-200);
+    padding-bottom: 0;
+  }
+  .tabbtn {
+    background: transparent; border: none; cursor: pointer;
+    color: var(--grey-600); font-size: 0.95rem; font-weight: 600;
+    padding: 12px 20px; border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+    font-family: inherit;
+  }
+  .tabbtn:hover { color: var(--axiom-blue); }
+  .tabbtn.active { color: var(--axiom-blue); border-bottom-color: var(--axiom-blue); }
+
+  .tabpanel { display: none; animation: fadein 0.35s ease; }
+  .tabpanel.active { display: block; }
+  @keyframes fadein { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+  .competitor-select-wrap { display: flex; justify-content: center; margin-bottom: 26px; }
+  select.competitor-select {
+    background: #ffffff;
+    border: 1px solid var(--grey-200);
+    color: var(--ink);
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    min-width: 320px;
+    font-family: inherit;
+  }
+
+  .card {
+    background: var(--off-white);
+    border: 1px solid var(--grey-200);
+    border-radius: 8px;
+    padding: 24px 26px;
+    margin-bottom: 20px;
+  }
+  .threat-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 5px 14px; border-radius: 999px;
+    font-size: 0.78rem; font-weight: 700; letter-spacing: 0.3px;
+    margin-bottom: 14px;
+  }
+  .threat-high { background: var(--signal-amber); color: #ffffff; }
+  .threat-med { background: var(--blue-200); color: var(--navy-900); }
+  .threat-low { background: var(--grey-200); color: var(--charcoal); }
+
+  .competitor-name { font-size: 1.6rem; font-weight: 300; margin: 0 0 14px; color: var(--ink); }
+  .why-label { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.6px; color: var(--signal-amber); font-weight: 700; margin-bottom: 8px; }
+  .why-body { color: var(--charcoal); line-height: 1.6; font-size: 0.96rem; }
+
+  .depos-card {
+    border-left: 3px solid var(--signal-amber);
+    background: #FDF6EE;
+  }
+  .depos-label { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.6px; color: var(--signal-amber); font-weight: 700; margin-bottom: 12px; }
+  .depos-claim { font-style: italic; color: var(--grey-600); margin-bottom: 12px; line-height: 1.55; }
+  .depos-angle { color: var(--ink); font-weight: 400; line-height: 1.65; font-size: 0.98rem; }
+
+  .section-header {
+    font-size: 1.1rem; font-weight: 700; margin: 30px 0 12px;
+    color: var(--ink);
+  }
+
+  table { width: 100%; border-collapse: collapse; margin-bottom: 10px; }
+  .table-wrap { overflow-x: auto; border-radius: 8px; border: 1px solid var(--grey-200); background: #ffffff; }
+  th, td { padding: 12px 16px; text-align: left; font-size: 0.9rem; vertical-align: top; }
+  thead th { background: var(--blue-50); font-weight: 700; color: var(--navy-900); white-space: nowrap; }
+  tbody tr { border-top: 1px solid var(--grey-200); }
+  tbody tr:nth-child(even) { background: #FBFAF8; }
+  .col-yourproduct { border-left: 3px solid var(--axiom-blue); background: var(--blue-50); }
+  th.col-yourproduct { border-left: 3px solid var(--axiom-blue); }
+  .col-details { color: var(--grey-600); font-size: 0.85rem; }
+
+  .dim-label { font-weight: 700; color: var(--ink); white-space: nowrap; background: #FBFAF8; position: sticky; left: 0; z-index: 2; }
+
+  .dot-badge { display: inline-flex; align-items: center; gap: 6px; font-size: 0.85rem; font-weight: 600; color: var(--charcoal); }
+  .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+  .dot-high { background: var(--signal-amber); }
+  .dot-med { background: var(--blue-300); }
+  .dot-low { background: var(--grey-400); }
+
+  .cat-row td {
+    background: var(--blue-50);
+    font-weight: 700; font-size: 0.78rem;
+    text-transform: uppercase; letter-spacing: 0.6px;
+    color: var(--axiom-blue);
+  }
+  .symbol { text-align: center; font-size: 1.1rem; }
+  .sym-full { color: var(--axiom-blue); }
+  .sym-partial { color: var(--signal-amber); }
+  .sym-none { color: var(--grey-400); }
+
+  .legend { color: var(--grey-600); font-size: 0.85rem; margin-top: 12px; text-align: center; }
+
+  .comp-section-title {
+    font-size: 1.05rem; font-weight: 700; margin: 26px 0 10px;
+    padding-bottom: 8px; border-bottom: 1px solid var(--grey-200);
+    color: var(--ink);
+  }
+
+  @media (max-width: 700px) {
+    header { padding: 14px 16px; }
+    main { padding: 20px 12px 60px; }
+    .card { padding: 18px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <a href="index.html" class="logo-link">
+    <img src="data:image/png;base64,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" alt="Third Axiom" class="logo-img">
+  </a>
+  <span class="tool-label">Competitive Intelligence</span>
+  <button class="pdf-btn" onclick="window.print()">⬇ Save PDF</button>
+</header>
+
+<main>
+  <div class="product-select-wrap" id="productSelectWrap" style="display:none;">
+    <select class="product-select" id="productSelect"></select>
+  </div>
+
+  <div class="tabbar">
+    <button class="tabbtn active" data-tab="teardown">⚔️ Competitor Teardown</button>
+    <button class="tabbtn" data-tab="comparison">📊 Competitive Comparison</button>
+    <button class="tabbtn" data-tab="capabilities">✅ Capability Comparison</button>
+  </div>
+
+  <div class="tabpanel active" id="panel-teardown">
+    <div class="competitor-select-wrap">
+      <select class="competitor-select" id="competitorSelect"></select>
+    </div>
+    <div id="teardownContent"></div>
+  </div>
+
+  <div class="tabpanel" id="panel-comparison">
+    <div id="comparisonContent"></div>
+  </div>
+
+  <div class="tabpanel" id="panel-capabilities">
+    <div id="capabilitiesContent"></div>
+  </div>
+</main>
+
+<script>
+const COMPETITIVE_DATA = {"products": ["Axiom-Apps"], "competitors": {"Axiom-Apps": ["Excel / Spreadsheets", "Native TMS Analytics", "Power BI", "Tableau", "Enveyo", "Loop"]}, "threatLevel": {"Axiom-Apps": {"Excel / Spreadsheets": "high", "Native TMS Analytics": "high", "Power BI": "high", "Tableau": "med", "Enveyo": "low", "Loop": "low"}}, "whyItMatters": {"Axiom-Apps": {"Excel / Spreadsheets": "The default choice for under-resourced teams because it's free and familiar. Reps hit it constantly as the status quo \u2014 the real competitor isn't a vendor, it's inertia and the belief that a spreadsheet is 'good enough.'", "Native TMS Analytics": "Already paid for as part of the TMS license, so it's the path of least resistance. Buyers assume they don't need anything else until they realize the reporting bundled with MercuryGate, Tai, or Turvo is transaction-grade, not analysis-grade.", "Power BI": "The most common 'why not just build it ourselves' objection from IT-adjacent buyers. Enterprise-grade brand recognition and broad connectivity make it look like a safe, flexible default for any reporting need.", "Tableau": "Shows up whenever a buyer already has a BI standard in place or a data team pushing for 'best-in-class visualization.' Its polish is the sales pitch \u2014 reps need to be ready to separate a good-looking dashboard from a correct one.", "Enveyo": "A credible enterprise logistics platform that can get name-dropped by buyers doing broad vendor research. It's a real product with real capability \u2014 just built and priced for a much larger shipper, not a growth-stage broker.", "Loop": "An AI-native, well-funded platform that sounds adjacent to Axiom-Apps on the surface (freight, AI, data). Reps need to draw a sharp line between freight audit/spend intelligence (Loop's game) and carrier-decision intelligence (Axiom-Apps' game)."}}, "intel": {"Axiom-Apps": {"Excel / Spreadsheets": [{"capability": "Carrier scorecards by lane", "your_product": "Automated carrier scorecards generated per lane from your own shipment data", "competitor": "Built manually via pivot tables and formulas, one tab per lane/carrier", "details": "Axiom-Apps: Full support \u00b7 Excel: Partial / manual workaround"}, {"capability": "Uses your own shipment data (not market averages)", "your_product": "Built entirely on your actual shipment history, never market benchmarks", "competitor": "Yes, whatever data is manually loaded in", "details": "Axiom-Apps: Full support \u00b7 Excel: Full support"}, {"capability": "Multi-modal (TL/LTL) lane-level breakdown", "your_product": "Automatically separates TL and LTL so lane analysis is never blended by mistake", "competitor": "Possible but entirely dependent on the analyst remembering to separate modes", "details": "Axiom-Apps: Full support \u00b7 Excel: Partial / manual workaround"}, {"capability": "AI data-quality safeguards (flags bad mixes/incomplete data)", "your_product": "AI safeguards flag mode-blending, incomplete statuses, or other issues before they skew a report", "competitor": "None \u2014 nothing stops blended or incomplete data from entering a report", "details": "Axiom-Apps: Full support \u00b7 Excel: Not supported"}, {"capability": "Understands freight/TMS data model out of the box", "your_product": "Understands freight/TMS data structure natively \u2014 no custom modeling required", "competitor": "No inherent understanding of freight concepts; entirely manual", "details": "Axiom-Apps: Full support \u00b7 Excel: Not supported"}, {"capability": "Automated, self-updating reports", "your_product": "Reports refresh automatically as new shipment data comes in", "competitor": "Static once built; must be manually refreshed and rebuilt", "details": "Axiom-Apps: Full support \u00b7 Excel: Not supported"}, {"capability": "Change/anomaly monitoring (e.g. missing customer, margin drop)", "your_product": "Watch Cards and treemaps flag anomalies like a missing customer or margin slide as they happen", "competitor": "None \u2014 anomalies only surface if someone happens to notice them", "details": "Axiom-Apps: Full support \u00b7 Excel: Not supported"}, {"capability": "Automated QBR generation", "your_product": "Automated QBR generation is on the roadmap (partial support today)", "competitor": "Fully manual, slide-by-slide", "details": "Axiom-Apps: Full support \u00b7 Excel: Not supported"}, {"capability": "Usable without an analyst or data team", "your_product": "Designed for a super user to run without a dedicated analyst or data science team", "competitor": "Yes, but quality depends entirely on the individual building it", "details": "Axiom-Apps: Full support \u00b7 Excel: Full support"}, {"capability": "Fast time-to-value (no deep integration)", "your_product": "Self-serve trial with a data upload/extract model \u2014 no deep system integration required", "competitor": "Immediate to start, but analysis build-out is ongoing manual work", "details": "Axiom-Apps: Full support \u00b7 Excel: Full support"}, {"capability": "Right-sized for growth-stage 3PLs (vs. enterprise-only)", "your_product": "Sized and priced for growth-stage 3PLs/brokers, not enterprise shippers", "competitor": "Right-sized by default \u2014 it's free and already in use", "details": "Axiom-Apps: Full support \u00b7 Excel: Full support"}, {"capability": "Freight/parcel invoice audit", "your_product": "Not a focus area \u2014 Axiom-Apps is built for carrier decisions, not invoice audit", "competitor": "Not supported natively", "details": "Axiom-Apps: Full support \u00b7 Excel: Not supported"}, {"capability": "Network/carrier-mix modeling & simulation", "your_product": "Not currently offered \u2014 the focus is real-time scoring, not simulation", "competitor": "Not supported natively", "details": "Axiom-Apps: Full support \u00b7 Excel: Not supported"}, {"capability": "Standout Feature", "your_product": "AI data-quality safeguards that catch analysis mistakes (mixing modes, incomplete statuses) before they skew results", "competitor": "None \u2014 the default, not a feature", "details": "Its 'feature' is really the absence of any structure \u2014 that's the exposure, not the strength."}], "Native TMS Analytics": [{"capability": "Carrier scorecards by lane", "your_product": "Automated carrier scorecards generated per lane from your own shipment data", "competitor": "Standard reports/exports tied to the TMS data model, not purpose-built scorecards", "details": "Axiom-Apps: Full support \u00b7 Native TMS Analytics: Partial / manual workaround"}, {"capability": "Uses your own shipment data (not market averages)", "your_product": "Built entirely on your actual shipment history, never market benchmarks", "competitor": "Yes, it's your own execution data", "details": "Axiom-Apps: Full support \u00b7 Native TMS Analytics: Full support"}, {"capability": "Multi-modal (TL/LTL) lane-level breakdown", "your_product": "Automatically separates TL and LTL so lane analysis is never blended by mistake", "competitor": "Possible via exports, but not natively separated for analysis", "details": "Axiom-Apps: Full support \u00b7 Native TMS Analytics: Partial / manual workaround"}, {"capability": "AI data-quality safeguards (flags bad mixes/incomplete data)", "your_product": "AI safeguards flag mode-blending, incomplete statuses, or other issues before they skew a report", "competitor": "None \u2014 it's a system of record, not an analysis layer", "details": "Axiom-Apps: Full support \u00b7 Native TMS Analytics: Not supported"}, {"capability": "Understands freight/TMS data model out of the box", "your_product": "Understands freight/TMS data structure natively \u2014 no custom modeling required", "competitor": "Yes for transactions, but not structured for analytical use", "details": "Axiom-Apps: Full support \u00b7 Native TMS Analytics: Full support"}, {"capability": "Automated, self-updating reports", "your_product": "Reports refresh automatically as new shipment data comes in", "competitor": "Partially \u2014 standard reports refresh, but ad hoc analysis doesn't", "details": "Axiom-Apps: Full support \u00b7 Native TMS Analytics: Partial / manual workaround"}, {"capability": "Change/anomaly monitoring (e.g. missing customer, margin drop)", "your_product": "Watch Cards and treemaps flag anomalies like a missing customer or margin slide as they happen", "competitor": "None built in", "details": "Axiom-Apps: Full support \u00b7 Native TMS Analytics: Not supported"}, {"capability": "Automated QBR generation", "your_product": "Automated QBR generation is on the roadmap (partial support today)", "competitor": "None", "details": "Axiom-Apps: Full support \u00b7 Native TMS Analytics: Not supported"}, {"capability": "Usable without an analyst or data team", "your_product": "Designed for a super user to run without a dedicated analyst or data science team", "competitor": "Yes for standard reports", "details": "Axiom-Apps: Full support \u00b7 Native TMS Analytics: Full support"}, {"capability": "Fast time-to-value (no deep integration)", "your_product": "Self-serve trial with a data upload/extract model \u2014 no deep system integration required", "competitor": "Already built in, no separate deployment", "details": "Axiom-Apps: Full support \u00b7 Native TMS Analytics: Full support"}, {"capability": "Right-sized for growth-stage 3PLs (vs. enterprise-only)", "your_product": "Sized and priced for growth-stage 3PLs/brokers, not enterprise shippers", "competitor": "Right-sized since it's bundled with the TMS they already pay for", "details": "Axiom-Apps: Full support \u00b7 Native TMS Analytics: Full support"}, {"capability": "Freight/parcel invoice audit", "your_product": "Not a focus area \u2014 Axiom-Apps is built for carrier decisions, not invoice audit", "competitor": "Not supported natively", "details": "Axiom-Apps: Full support \u00b7 Native TMS Analytics: Not supported"}, {"capability": "Network/carrier-mix modeling & simulation", "your_product": "Not currently offered \u2014 the focus is real-time scoring, not simulation", "competitor": "Not supported natively", "details": "Axiom-Apps: Full support \u00b7 Native TMS Analytics: Not supported"}, {"capability": "Standout Feature", "your_product": "AI data-quality safeguards that catch analysis mistakes (mixing modes, incomplete statuses) before they skew results", "competitor": "Already paid for as part of the TMS license", "details": "Free only in the sense that the cost is deferred to whoever ends up exporting to Excel anyway."}], "Power BI": [{"capability": "Carrier scorecards by lane", "your_product": "Automated carrier scorecards generated per lane from your own shipment data", "competitor": "Possible via custom dashboard building, but requires an analyst to define freight logic", "details": "Axiom-Apps: Full support \u00b7 Power BI: Partial / manual workaround"}, {"capability": "Uses your own shipment data (not market averages)", "your_product": "Built entirely on your actual shipment history, never market benchmarks", "competitor": "Yes, once connected and modeled", "details": "Axiom-Apps: Full support \u00b7 Power BI: Full support"}, {"capability": "Multi-modal (TL/LTL) lane-level breakdown", "your_product": "Automatically separates TL and LTL so lane analysis is never blended by mistake", "competitor": "Possible only if someone manually builds the TL/LTL logic", "details": "Axiom-Apps: Full support \u00b7 Power BI: Partial / manual workaround"}, {"capability": "AI data-quality safeguards (flags bad mixes/incomplete data)", "your_product": "AI safeguards flag mode-blending, incomplete statuses, or other issues before they skew a report", "competitor": "None built in \u2014 bad data flows straight into dashboards", "details": "Axiom-Apps: Full support \u00b7 Power BI: Not supported"}, {"capability": "Understands freight/TMS data model out of the box", "your_product": "Understands freight/TMS data structure natively \u2014 no custom modeling required", "competitor": "No \u2014 freight concepts like lane and mode must be manually modeled", "details": "Axiom-Apps: Full support \u00b7 Power BI: Not supported"}, {"capability": "Automated, self-updating reports", "your_product": "Reports refresh automatically as new shipment data comes in", "competitor": "Yes, once built and connected", "details": "Axiom-Apps: Full support \u00b7 Power BI: Full support"}, {"capability": "Change/anomaly monitoring (e.g. missing customer, margin drop)", "your_product": "Watch Cards and treemaps flag anomalies like a missing customer or margin slide as they happen", "competitor": "Possible with custom alerting, but not freight-aware by default", "details": "Axiom-Apps: Full support \u00b7 Power BI: Partial / manual workaround"}, {"capability": "Automated QBR generation", "your_product": "Automated QBR generation is on the roadmap (partial support today)", "competitor": "None", "details": "Axiom-Apps: Full support \u00b7 Power BI: Not supported"}, {"capability": "Usable without an analyst or data team", "your_product": "Designed for a super user to run without a dedicated analyst or data science team", "competitor": "No \u2014 requires BI/analyst setup and ongoing maintenance", "details": "Axiom-Apps: Full support \u00b7 Power BI: Not supported"}, {"capability": "Fast time-to-value (no deep integration)", "your_product": "Self-serve trial with a data upload/extract model \u2014 no deep system integration required", "competitor": "Slow \u2014 requires data modeling and dashboard build-out before value appears", "details": "Axiom-Apps: Full support \u00b7 Power BI: Partial / manual workaround"}, {"capability": "Right-sized for growth-stage 3PLs (vs. enterprise-only)", "your_product": "Sized and priced for growth-stage 3PLs/brokers, not enterprise shippers", "competitor": "Partial \u2014 powerful but overbuilt for this buyer's team size", "details": "Axiom-Apps: Full support \u00b7 Power BI: Partial / manual workaround"}, {"capability": "Freight/parcel invoice audit", "your_product": "Not a focus area \u2014 Axiom-Apps is built for carrier decisions, not invoice audit", "competitor": "Not supported natively", "details": "Axiom-Apps: Full support \u00b7 Power BI: Not supported"}, {"capability": "Network/carrier-mix modeling & simulation", "your_product": "Not currently offered \u2014 the focus is real-time scoring, not simulation", "competitor": "Possible with custom build, not native", "details": "Axiom-Apps: Full support \u00b7 Power BI: Partial / manual workaround"}, {"capability": "Standout Feature", "your_product": "AI data-quality safeguards that catch analysis mistakes (mixing modes, incomplete statuses) before they skew results", "competitor": "Broad enterprise adoption/familiarity", "details": "Familiarity is real, but it says nothing about whether the dashboards are built on correct freight logic."}], "Tableau": [{"capability": "Carrier scorecards by lane", "your_product": "Automated carrier scorecards generated per lane from your own shipment data", "competitor": "Possible via custom dashboard building, but requires an analyst to define freight logic", "details": "Axiom-Apps: Full support \u00b7 Tableau: Partial / manual workaround"}, {"capability": "Uses your own shipment data (not market averages)", "your_product": "Built entirely on your actual shipment history, never market benchmarks", "competitor": "Yes, once connected and modeled", "details": "Axiom-Apps: Full support \u00b7 Tableau: Full support"}, {"capability": "Multi-modal (TL/LTL) lane-level breakdown", "your_product": "Automatically separates TL and LTL so lane analysis is never blended by mistake", "competitor": "Possible only if someone manually builds the TL/LTL logic", "details": "Axiom-Apps: Full support \u00b7 Tableau: Partial / manual workaround"}, {"capability": "AI data-quality safeguards (flags bad mixes/incomplete data)", "your_product": "AI safeguards flag mode-blending, incomplete statuses, or other issues before they skew a report", "competitor": "None built in \u2014 polished visuals can make bad data look trustworthy", "details": "Axiom-Apps: Full support \u00b7 Tableau: Not supported"}, {"capability": "Understands freight/TMS data model out of the box", "your_product": "Understands freight/TMS data structure natively \u2014 no custom modeling required", "competitor": "No \u2014 freight concepts must be manually modeled", "details": "Axiom-Apps: Full support \u00b7 Tableau: Not supported"}, {"capability": "Automated, self-updating reports", "your_product": "Reports refresh automatically as new shipment data comes in", "competitor": "Yes, once built and connected", "details": "Axiom-Apps: Full support \u00b7 Tableau: Full support"}, {"capability": "Change/anomaly monitoring (e.g. missing customer, margin drop)", "your_product": "Watch Cards and treemaps flag anomalies like a missing customer or margin slide as they happen", "competitor": "Possible with custom alerting, but not freight-aware by default", "details": "Axiom-Apps: Full support \u00b7 Tableau: Partial / manual workaround"}, {"capability": "Automated QBR generation", "your_product": "Automated QBR generation is on the roadmap (partial support today)", "competitor": "None", "details": "Axiom-Apps: Full support \u00b7 Tableau: Not supported"}, {"capability": "Usable without an analyst or data team", "your_product": "Designed for a super user to run without a dedicated analyst or data science team", "competitor": "No \u2014 requires BI/analyst setup and ongoing maintenance", "details": "Axiom-Apps: Full support \u00b7 Tableau: Not supported"}, {"capability": "Fast time-to-value (no deep integration)", "your_product": "Self-serve trial with a data upload/extract model \u2014 no deep system integration required", "competitor": "Slow \u2014 requires data modeling and dashboard build-out before value appears", "details": "Axiom-Apps: Full support \u00b7 Tableau: Partial / manual workaround"}, {"capability": "Right-sized for growth-stage 3PLs (vs. enterprise-only)", "your_product": "Sized and priced for growth-stage 3PLs/brokers, not enterprise shippers", "competitor": "Partial \u2014 premium-priced and overbuilt for this buyer's team size", "details": "Axiom-Apps: Full support \u00b7 Tableau: Partial / manual workaround"}, {"capability": "Freight/parcel invoice audit", "your_product": "Not a focus area \u2014 Axiom-Apps is built for carrier decisions, not invoice audit", "competitor": "Not supported natively", "details": "Axiom-Apps: Full support \u00b7 Tableau: Not supported"}, {"capability": "Network/carrier-mix modeling & simulation", "your_product": "Not currently offered \u2014 the focus is real-time scoring, not simulation", "competitor": "Possible with custom build, not native", "details": "Axiom-Apps: Full support \u00b7 Tableau: Partial / manual workaround"}, {"capability": "Standout Feature", "your_product": "AI data-quality safeguards that catch analysis mistakes (mixing modes, incomplete statuses) before they skew results", "competitor": "Best-in-class visualization aesthetics", "details": "Polish drives adoption, but visual quality and data correctness are independent variables here."}], "Enveyo": [{"capability": "Carrier scorecards by lane", "your_product": "Automated carrier scorecards generated per lane from your own shipment data", "competitor": "Native carrier performance scorecards as part of a broader enterprise platform", "details": "Axiom-Apps: Full support \u00b7 Enveyo: Full support"}, {"capability": "Uses your own shipment data (not market averages)", "your_product": "Built entirely on your actual shipment history, never market benchmarks", "competitor": "Yes", "details": "Axiom-Apps: Full support \u00b7 Enveyo: Full support"}, {"capability": "Multi-modal (TL/LTL) lane-level breakdown", "your_product": "Automatically separates TL and LTL so lane analysis is never blended by mistake", "competitor": "Supported but built around broader multi-modal/parcel breadth, not lane-first", "details": "Axiom-Apps: Full support \u00b7 Enveyo: Partial / manual workaround"}, {"capability": "AI data-quality safeguards (flags bad mixes/incomplete data)", "your_product": "AI safeguards flag mode-blending, incomplete statuses, or other issues before they skew a report", "competitor": "Some data unification capability, not purpose-built freight safeguards", "details": "Axiom-Apps: Full support \u00b7 Enveyo: Partial / manual workaround"}, {"capability": "Understands freight/TMS data model out of the box", "your_product": "Understands freight/TMS data structure natively \u2014 no custom modeling required", "competitor": "Partial \u2014 built more around parcel/enterprise shipping than TL/LTL brokerage", "details": "Axiom-Apps: Full support \u00b7 Enveyo: Partial / manual workaround"}, {"capability": "Automated, self-updating reports", "your_product": "Reports refresh automatically as new shipment data comes in", "competitor": "Yes, as part of the platform", "details": "Axiom-Apps: Full support \u00b7 Enveyo: Full support"}, {"capability": "Change/anomaly monitoring (e.g. missing customer, margin drop)", "your_product": "Watch Cards and treemaps flag anomalies like a missing customer or margin slide as they happen", "competitor": "Partial, via broader cost-to-serve visibility, not purpose-built anomaly flags", "details": "Axiom-Apps: Full support \u00b7 Enveyo: Partial / manual workaround"}, {"capability": "Automated QBR generation", "your_product": "Automated QBR generation is on the roadmap (partial support today)", "competitor": "None", "details": "Axiom-Apps: Full support \u00b7 Enveyo: Not supported"}, {"capability": "Usable without an analyst or data team", "your_product": "Designed for a super user to run without a dedicated analyst or data science team", "competitor": "Partial \u2014 enterprise implementation typically involves dedicated support", "details": "Axiom-Apps: Full support \u00b7 Enveyo: Partial / manual workaround"}, {"capability": "Fast time-to-value (no deep integration)", "your_product": "Self-serve trial with a data upload/extract model \u2014 no deep system integration required", "competitor": "No \u2014 sales-led, multi-module enterprise implementation", "details": "Axiom-Apps: Full support \u00b7 Enveyo: Not supported"}, {"capability": "Right-sized for growth-stage 3PLs (vs. enterprise-only)", "your_product": "Sized and priced for growth-stage 3PLs/brokers, not enterprise shippers", "competitor": "No \u2014 built and priced for enterprise shippers and large 3PLs", "details": "Axiom-Apps: Full support \u00b7 Enveyo: Not supported"}, {"capability": "Freight/parcel invoice audit", "your_product": "Not a focus area \u2014 Axiom-Apps is built for carrier decisions, not invoice audit", "competitor": "Full support \u2014 one of its core modules", "details": "Axiom-Apps: Full support \u00b7 Enveyo: Full support"}, {"capability": "Network/carrier-mix modeling & simulation", "your_product": "Not currently offered \u2014 the focus is real-time scoring, not simulation", "competitor": "Full support \u2014 'Modeling' is a core Enveyo capability", "details": "Axiom-Apps: Full support \u00b7 Enveyo: Full support"}, {"capability": "Standout Feature", "your_product": "AI data-quality safeguards that catch analysis mistakes (mixing modes, incomplete statuses) before they skew results", "competitor": "\"Modeling\" \u2014 simulate carrier/network changes before committing", "details": "A genuinely differentiated capability \u2014 but scoped for enterprise shippers running much higher, more complex volume."}], "Loop": [{"capability": "Carrier scorecards by lane", "your_product": "Automated carrier scorecards generated per lane from your own shipment data", "competitor": "Not the product's focus \u2014 built around audit/spend, not lane-level carrier decisions", "details": "Axiom-Apps: Full support \u00b7 Loop: Partial / manual workaround"}, {"capability": "Uses your own shipment data (not market averages)", "your_product": "Built entirely on your actual shipment history, never market benchmarks", "competitor": "Yes", "details": "Axiom-Apps: Full support \u00b7 Loop: Full support"}, {"capability": "Multi-modal (TL/LTL) lane-level breakdown", "your_product": "Automatically separates TL and LTL so lane analysis is never blended by mistake", "competitor": "Not supported \u2014 audit-focused, not lane/mode analysis", "details": "Axiom-Apps: Full support \u00b7 Loop: Not supported"}, {"capability": "AI data-quality safeguards (flags bad mixes/incomplete data)", "your_product": "AI safeguards flag mode-blending, incomplete statuses, or other issues before they skew a report", "competitor": "Strong AI-driven data normalization, but aimed at invoice/audit accuracy", "details": "Axiom-Apps: Full support \u00b7 Loop: Full support"}, {"capability": "Understands freight/TMS data model out of the box", "your_product": "Understands freight/TMS data structure natively \u2014 no custom modeling required", "competitor": "Partial \u2014 strong on invoice/audit data, less on lane-level carrier structure", "details": "Axiom-Apps: Full support \u00b7 Loop: Partial / manual workaround"}, {"capability": "Automated, self-updating reports", "your_product": "Reports refresh automatically as new shipment data comes in", "competitor": "Yes", "details": "Axiom-Apps: Full support \u00b7 Loop: Full support"}, {"capability": "Change/anomaly monitoring (e.g. missing customer, margin drop)", "your_product": "Watch Cards and treemaps flag anomalies like a missing customer or margin slide as they happen", "competitor": "Partial, via exception management, not margin/customer-specific", "details": "Axiom-Apps: Full support \u00b7 Loop: Partial / manual workaround"}, {"capability": "Automated QBR generation", "your_product": "Automated QBR generation is on the roadmap (partial support today)", "competitor": "None", "details": "Axiom-Apps: Full support \u00b7 Loop: Not supported"}, {"capability": "Usable without an analyst or data team", "your_product": "Designed for a super user to run without a dedicated analyst or data science team", "competitor": "Partial \u2014 enterprise-oriented implementation", "details": "Axiom-Apps: Full support \u00b7 Loop: Partial / manual workaround"}, {"capability": "Fast time-to-value (no deep integration)", "your_product": "Self-serve trial with a data upload/extract model \u2014 no deep system integration required", "competitor": "No \u2014 sales-led, enterprise implementation via document/API/EDI feeds", "details": "Axiom-Apps: Full support \u00b7 Loop: Not supported"}, {"capability": "Right-sized for growth-stage 3PLs (vs. enterprise-only)", "your_product": "Sized and priced for growth-stage 3PLs/brokers, not enterprise shippers", "competitor": "No \u2014 built for Fortune 500-heavy shippers", "details": "Axiom-Apps: Full support \u00b7 Loop: Not supported"}, {"capability": "Freight/parcel invoice audit", "your_product": "Not a focus area \u2014 Axiom-Apps is built for carrier decisions, not invoice audit", "competitor": "Full support \u2014 this is the core product", "details": "Axiom-Apps: Full support \u00b7 Loop: Full support"}, {"capability": "Network/carrier-mix modeling & simulation", "your_product": "Not currently offered \u2014 the focus is real-time scoring, not simulation", "competitor": "Partial support", "details": "Axiom-Apps: Full support \u00b7 Loop: Partial / manual workaround"}, {"capability": "Standout Feature", "your_product": "AI data-quality safeguards that catch analysis mistakes (mixing modes, incomplete statuses) before they skew results", "competitor": "AI document extraction (DUX) that normalizes invoices/BOLs automatically", "details": "A real AI capability, but aimed at invoice/audit accuracy, not carrier decision quality."}]}}, "dePosition": {"Axiom-Apps": {"Excel / Spreadsheets": {"their_claim": "Free, familiar, total control \u2014 \"we can build it exactly how we want.\"", "the_angle": "Total control means nothing stops a user from blending TL and LTL in one analysis, or counting in-transit loads as completed shipments. The flexibility they're proud of is exactly what removes any safeguard against bad data \u2014 every carrier decision and every customer report may already be wrong, and no one would know. Control isn't a feature when nothing is checking the work."}, "Native TMS Analytics": {"their_claim": "Already included, no extra cost, built into the system of record they already trust for execution.", "the_angle": "It's built for transactions, not analysis, and that's the problem hiding in plain sight. The same completeness that makes it reliable for running the business makes it useless for understanding it, since nothing separates delivered from in-transit or flags a TL/LTL blend. Teams end up exporting to Excel anyway, so the 'free' reporting is really just deferred cost."}, "Power BI": {"their_claim": "Enterprise-grade, connect any data source, build any dashboard \u2014 universal flexibility.", "the_angle": "Universal is the opposite of freight-native. Power BI doesn't know what a lane is, doesn't know that 'delivered' means something different across modes, and won't stop you from mixing TL and LTL. Someone has to manually teach it freight logic, usually an analyst this buyer doesn't have \u2014 and if that person leaves, the dashboards keep running while quietly drifting wrong."}, "Tableau": {"their_claim": "Best-in-class visualization \u2014 the most polished, most trusted way to see your data.", "the_angle": "Beautiful is not the same as correct. Tableau has the same freight-blindness as Power BI, but its visual polish makes bad numbers more convincing, not less. A confident-looking chart built on blended TL/LTL data or unfiltered in-transit shipments inspires false confidence at the exact moment a broker is about to make a carrier or pricing call."}, "Enveyo": {"their_claim": "\"Logistics without limits\" \u2014 a broad enterprise platform spanning audit, modeling, rate shopping, and parcel optimization.", "the_angle": "No limits also means no focus. Enveyo is built for enterprise shippers and parcel-heavy volume, with a sales-led, multi-module implementation to match. For a growth-stage broker moving 1,000-4,000 truckload/LTL shipments a month, that breadth is dead weight \u2014 paying for modules you'll never touch on an onboarding timeline sized for a much bigger company."}, "Loop": {"their_claim": "AI-native logistics data platform, purpose-built for freight audit accuracy and spend intelligence at Fortune 500 scale.", "the_angle": "Loop is excellent at answering one question: did the carrier bill me correctly? That's a shipper's question, not a broker's. Audit precision doesn't produce lane-level carrier scorecards or margin-by-customer views \u2014 it tells you whether an invoice matched a contract, not whether the underlying carrier decision was any good. Add an enterprise-calibrated implementation, and Loop is solving an adjacent problem for a different-sized customer."}}}, "comparison": {"Axiom-Apps": {"dimensions": ["Threat Tier", "Primary Use Case", "Key Outcomes Claimed", "Core Capabilities", "Standout Feature", "Pricing Model", "Deployment Model", "Customer Segment", "TMS-Data Fit"], "rows": {"Threat Tier": {"your_product": "\u2014", "Excel / Spreadsheets": "high", "Native TMS Analytics": "high", "Power BI": "high", "Tableau": "med", "Enveyo": "low", "Loop": "low"}, "Primary Use Case": {"your_product": "Freight-native analytics: carrier scorecards, automated reporting, change monitoring for 3PLs/brokers", "Excel / Spreadsheets": "Manual shipment analysis and ad hoc reporting", "Native TMS Analytics": "Basic operational reporting bundled with the TMS", "Power BI": "General-purpose BI dashboards, built by IT/analysts", "Tableau": "General-purpose BI/visualization, built by IT/analysts", "Enveyo": "Enterprise shipping analytics, rate optimization, parcel/freight audit", "Loop": "Logistics data platform: freight audit, AP automation, spend intelligence"}, "Key Outcomes Claimed": {"your_product": "Better carrier selection, margin improvement, reliable automated reporting, early change detection", "Excel / Spreadsheets": "Familiarity, full control, no vendor cost", "Native TMS Analytics": "\"Good enough\" visibility already in the platform they pay for", "Power BI": "Flexible cross-system dashboards", "Tableau": "Polished visual analytics", "Enveyo": "Reduced shipping spend, carrier performance scorecards, cost-to-serve visibility", "Loop": "6%+ transportation savings via audit accuracy and spend visibility"}, "Core Capabilities": {"your_product": "Carrier scorecards by lane, data quality safeguards, Watch Cards/treemaps for change monitoring, automated QBRs (upcoming)", "Excel / Spreadsheets": "Pivot tables, manual formulas, tabs per lane/carrier", "Native TMS Analytics": "Standard reports/exports tied to the TMS data model", "Power BI": "Custom dashboards, wide data-source connectivity", "Tableau": "Custom dashboards, strong visualization layer", "Enveyo": "Data unification, carrier scorecards, modeling/simulation, rate shopping, audit", "Loop": "Data normalization, AI-driven freight audit, exception management, spend analytics"}, "Standout Feature": {"your_product": "AI data-quality safeguards that catch analysis mistakes (mixing modes, incomplete statuses) before they skew results", "Excel / Spreadsheets": "None \u2014 the default, not a feature", "Native TMS Analytics": "Already paid for as part of the TMS license", "Power BI": "Broad enterprise adoption/familiarity", "Tableau": "Best-in-class visualization aesthetics", "Enveyo": "\"Modeling\" \u2014 simulate carrier/network changes before committing", "Loop": "AI document extraction (DUX) that normalizes invoices/BOLs automatically"}, "Pricing Model": {"your_product": "Subscription, sized for growth-stage 3PLs/brokers", "Excel / Spreadsheets": "Sunk cost (Microsoft 365 license)", "Native TMS Analytics": "Bundled into TMS license", "Power BI": "Per-user license", "Tableau": "Per-user license, generally premium-priced", "Enveyo": "Tiered subscription based on volume/features", "Loop": "Not public \u2014 enterprise, volume-based"}, "Deployment Model": {"your_product": "Self-serve trial, data upload/extract-based \u2014 no deep integration", "Excel / Spreadsheets": "N/A", "Native TMS Analytics": "Built-in, no separate deployment", "Power BI": "Requires BI/analyst setup and maintenance", "Tableau": "Requires BI/analyst setup and maintenance", "Enveyo": "Sales-led, enterprise implementation", "Loop": "Sales-led, enterprise implementation via document/API/EDI feeds"}, "Customer Segment": {"your_product": "Growth-stage 3PLs/brokers, $10-99M ARR, 1,000-4,000 shipments/mo", "Excel / Spreadsheets": "Any size \u2014 default for under-resourced teams", "Native TMS Analytics": "Any TMS customer", "Power BI": "Mid-market to enterprise, any industry", "Tableau": "Mid-market to enterprise, any industry (higher volume floor)", "Enveyo": "Enterprise shippers and large 3PLs", "Loop": "Enterprise shippers, Fortune 500-heavy customer base"}, "TMS-Data Fit": {"your_product": "Purpose-built for TMS exports; understands freight data structure out of the box", "Excel / Spreadsheets": "Manual export/import \u2014 error-prone", "Native TMS Analytics": "Native, but analytics-light", "Power BI": "Generic \u2014 requires custom data modeling for freight concepts", "Tableau": "Generic \u2014 requires custom data modeling for freight concepts", "Enveyo": "Strong for parcel; broader freight/multi-modal support varies", "Loop": "Strong for invoice/audit data; less focused on lane-level carrier analytics"}}}}, "capabilities": {"Axiom-Apps": {"competitors": ["Excel / Spreadsheets", "Native TMS Analytics", "Power BI", "Tableau", "Enveyo", "Loop"], "categories": [{"name": "Carrier & Lane Analysis", "features": [{"label": "Carrier scorecards by lane", "your_product": "full", "Excel / Spreadsheets": "partial", "Native TMS Analytics": "partial", "Power BI": "partial", "Tableau": "partial", "Enveyo": "full", "Loop": "partial"}, {"label": "Uses your own shipment data (not market averages)", "your_product": "full", "Excel / Spreadsheets": "full", "Native TMS Analytics": "full", "Power BI": "full", "Tableau": "full", "Enveyo": "full", "Loop": "full"}, {"label": "Multi-modal (TL/LTL) lane-level breakdown", "your_product": "full", "Excel / Spreadsheets": "partial", "Native TMS Analytics": "partial", "Power BI": "partial", "Tableau": "partial", "Enveyo": "partial", "Loop": "none"}]}, {"name": "Data Quality & Reliability", "features": [{"label": "AI data-quality safeguards (flags bad mixes/incomplete data)", "your_product": "full", "Excel / Spreadsheets": "none", "Native TMS Analytics": "none", "Power BI": "none", "Tableau": "none", "Enveyo": "partial", "Loop": "full"}, {"label": "Understands freight/TMS data model out of the box", "your_product": "full", "Excel / Spreadsheets": "none", "Native TMS Analytics": "full", "Power BI": "none", "Tableau": "none", "Enveyo": "partial", "Loop": "partial"}]}, {"name": "Reporting & Monitoring", "features": [{"label": "Automated, self-updating reports", "your_product": "full", "Excel / Spreadsheets": "none", "Native TMS Analytics": "partial", "Power BI": "full", "Tableau": "full", "Enveyo": "full", "Loop": "full"}, {"label": "Change/anomaly monitoring (e.g. missing customer, margin drop)", "your_product": "full", "Excel / Spreadsheets": "none", "Native TMS Analytics": "none", "Power BI": "partial", "Tableau": "partial", "Enveyo": "partial", "Loop": "partial"}, {"label": "Automated QBR generation", "your_product": "partial", "Excel / Spreadsheets": "none", "Native TMS Analytics": "none", "Power BI": "none", "Tableau": "none", "Enveyo": "none", "Loop": "none"}]}, {"name": "Adoption & Fit", "features": [{"label": "Usable without an analyst or data team", "your_product": "full", "Excel / Spreadsheets": "full", "Native TMS Analytics": "full", "Power BI": "none", "Tableau": "none", "Enveyo": "partial", "Loop": "partial"}, {"label": "Fast time-to-value (no deep integration)", "your_product": "full", "Excel / Spreadsheets": "full", "Native TMS Analytics": "full", "Power BI": "partial", "Tableau": "partial", "Enveyo": "none", "Loop": "none"}, {"label": "Right-sized for growth-stage 3PLs (vs. enterprise-only)", "your_product": "full", "Excel / Spreadsheets": "full", "Native TMS Analytics": "full", "Power BI": "partial", "Tableau": "partial", "Enveyo": "none", "Loop": "none"}]}, {"name": "Adjacent Capabilities", "features": [{"label": "Freight/parcel invoice audit", "your_product": "none", "Excel / Spreadsheets": "none", "Native TMS Analytics": "none", "Power BI": "none", "Tableau": "none", "Enveyo": "full", "Loop": "full"}, {"label": "Network/carrier-mix modeling & simulation", "your_product": "none", "Excel / Spreadsheets": "none", "Native TMS Analytics": "none", "Power BI": "partial", "Tableau": "partial", "Enveyo": "full", "Loop": "partial"}]}]}}};
+
+let currentProduct = COMPETITIVE_DATA.products[0];
+
+function init() {
+  const products = COMPETITIVE_DATA.products;
+  const productSelect = document.getElementById('productSelect');
+  const productWrap = document.getElementById('productSelectWrap');
+  if (products.length > 1) {
+    productWrap.style.display = 'flex';
+    products.forEach(p => {
+      const opt = document.createElement('option');
+      opt.value = p; opt.textContent = p;
+      productSelect.appendChild(opt);
+    });
+    productSelect.value = currentProduct;
+    productSelect.addEventListener('change', () => {
+      currentProduct = productSelect.value;
+      renderAll();
+    });
+  }
+
+  document.querySelectorAll('.tabbtn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tabbtn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tabpanel').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('panel-' + btn.dataset.tab).classList.add('active');
+    });
+  });
+
+  const competitorSelect = document.getElementById('competitorSelect');
+  competitorSelect.addEventListener('change', renderTeardown);
+
+  renderAll();
+}
+
+function renderAll() {
+  populateCompetitorSelect();
+  renderTeardown();
+  renderComparison();
+  renderCapabilities();
+}
+
+function populateCompetitorSelect() {
+  const sel = document.getElementById('competitorSelect');
+  sel.innerHTML = '';
+  const allOpt = document.createElement('option');
+  allOpt.value = 'ALL'; allOpt.textContent = 'ALL Competitors';
+  sel.appendChild(allOpt);
+  const comps = COMPETITIVE_DATA.competitors[currentProduct] || [];
+  comps.forEach(c => {
+    const opt = document.createElement('option');
+    opt.value = c; opt.textContent = c;
+    sel.appendChild(opt);
+  });
+  sel.value = comps[0] || 'ALL';
+}
+
+function threatBadge(level) {
+  const map = {
+    high: ['▲ High Threat', 'threat-high'],
+    med: ['● Med Threat', 'threat-med'],
+    low: ['▼ Low Threat', 'threat-low']
+  };
+  const [label, cls] = map[level] || map.med;
+  return `<span class="threat-badge ${cls}">${label}</span>`;
+}
+
+function renderIntelTable(product, competitor) {
+  const rows = (COMPETITIVE_DATA.intel[product] && COMPETITIVE_DATA.intel[product][competitor]) || [];
+  let html = `<div class="table-wrap"><table><thead><tr>
+    <th>Capability / Feature / Benefit</th>
+    <th class="col-yourproduct">${product}</th>
+    <th>${competitor}</th>
+    <th>More Details</th>
+  </tr></thead><tbody>`;
+  rows.forEach(r => {
+    html += `<tr>
+      <td>${r.capability}</td>
+      <td class="col-yourproduct">${r.your_product}</td>
+      <td>${r.competitor}</td>
+      <td class="col-details">${r.details || ''}</td>
+    </tr>`;
+  });
+  html += '</tbody></table></div>';
+  return html;
+}
+
+function renderTeardown() {
+  const sel = document.getElementById('competitorSelect').value;
+  const container = document.getElementById('teardownContent');
+  const product = currentProduct;
+  let html = '';
+
+  if (sel === 'ALL') {
+    const comps = COMPETITIVE_DATA.competitors[product] || [];
+    comps.forEach(c => {
+      html += `<div class="comp-section-title">${c}</div>`;
+      html += renderIntelTable(product, c);
+    });
+  } else {
+    const threat = (COMPETITIVE_DATA.threatLevel[product] || {})[sel];
+    const why = (COMPETITIVE_DATA.whyItMatters[product] || {})[sel];
+    html += `<div class="card">
+      ${threatBadge(threat)}
+      <h3 class="competitor-name">${sel}</h3>
+      <div class="why-label">Why They Matter</div>
+      <div class="why-body">${why || ''}</div>
+    </div>`;
+
+    const depos = COMPETITIVE_DATA.dePosition && COMPETITIVE_DATA.dePosition[product] && COMPETITIVE_DATA.dePosition[product][sel];
+    if (depos) {
+      html += `<div class="card depos-card">
+        <div class="depos-label">De-Positioning Angle</div>
+        <div class="depos-claim">They say: "${depos.their_claim}"</div>
+        <div class="depos-angle">${depos.the_angle}</div>
+      </div>`;
+    }
+
+    html += renderIntelTable(product, sel);
+  }
+
+  container.innerHTML = html;
+}
+
+function threatDot(level) {
+  const map = { high: ['dot-high', 'High'], med: ['dot-med', 'Moderate'], low: ['dot-low', 'Low'] };
+  const [cls, label] = map[level] || ['dot-low', 'Watch'];
+  return `<span class="dot-badge"><span class="dot ${cls}"></span>${label}</span>`;
+}
+
+function renderComparison() {
+  const product = currentProduct;
+  const compData = COMPETITIVE_DATA.comparison[product];
+  const container = document.getElementById('comparisonContent');
+  if (!compData) { container.innerHTML = ''; return; }
+  const competitors = COMPETITIVE_DATA.competitors[product] || [];
+
+  let html = `<div class="table-wrap"><table><thead><tr>
+    <th class="dim-label">Dimension</th>
+    <th class="col-yourproduct">${product}</th>`;
+  competitors.forEach(c => { html += `<th>${c}</th>`; });
+  html += '</tr></thead><tbody>';
+
+  compData.dimensions.forEach(dim => {
+    const row = compData.rows[dim] || {};
+    html += `<tr><td class="dim-label">${dim}</td>`;
+    if (dim === 'Threat Tier') {
+      html += `<td class="col-yourproduct">—</td>`;
+      competitors.forEach(c => {
+        html += `<td>${threatDot(row[c])}</td>`;
+      });
+    } else {
+      html += `<td class="col-yourproduct">${row.your_product || ''}</td>`;
+      competitors.forEach(c => {
+        html += `<td>${row[c] || ''}</td>`;
+      });
+    }
+    html += '</tr>';
+  });
+
+  html += '</tbody></table></div>';
+  container.innerHTML = html;
+}
+
+function symbolCell(val) {
+  const map = { full: ['✓', 'sym-full'], partial: ['◐', 'sym-partial'], none: ['✕', 'sym-none'] };
+  const [sym, cls] = map[val] || ['', ''];
+  return `<td class="symbol ${cls}">${sym}</td>`;
+}
+
+function renderCapabilities() {
+  const product = currentProduct;
+  const capData = COMPETITIVE_DATA.capabilities[product];
+  const container = document.getElementById('capabilitiesContent');
+  if (!capData) { container.innerHTML = ''; return; }
+  const competitors = capData.competitors;
+
+  let html = `<div class="table-wrap"><table><thead><tr>
+    <th>Feature</th>
+    <th class="col-yourproduct">${product}</th>`;
+  competitors.forEach(c => { html += `<th>${c}</th>`; });
+  html += '</tr></thead><tbody>';
+
+  capData.categories.forEach(cat => {
+    html += `<tr class="cat-row"><td colspan="${2 + competitors.length}">${cat.name}</td></tr>`;
+    cat.features.forEach(f => {
+      html += `<tr><td>${f.label}</td>`;
+      const ypMap = { full: ['✓', 'sym-full'], partial: ['◐', 'sym-partial'], none: ['✕', 'sym-none'] };
+      const [ypSym, ypCls] = ypMap[f.your_product] || ['', ''];
+      html += `<td class="col-yourproduct symbol ${ypCls}">${ypSym}</td>`;
+      competitors.forEach(c => {
+        html += symbolCell(f[c]);
+      });
+      html += '</tr>';
+    });
+  });
+
+  html += '</tbody></table></div>';
+  html += `<div class="legend">✓ Full support &nbsp;·&nbsp; ◐ Partial / manual workaround &nbsp;·&nbsp; ✕ Not supported</div>`;
+  container.innerHTML = html;
+}
+
+init();
+</script>
+</body>
+</html>

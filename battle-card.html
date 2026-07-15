@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Axiom-Apps Battle Card</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="googlebot" content="noindex, nofollow">
+<meta name="CCBot" content="noindex, nofollow">
+<meta name="GPTBot" content="noindex, nofollow">
+<meta name="anthropic-ai" content="noindex, nofollow">
+<meta name="PerplexityBot" content="noindex, nofollow">
+<style>
+  :root{
+    --bg:#FAF8F5;
+    --paper:#F1EEE8;
+    --divider:#E5E7EB;
+    --rule:#E5E7EB;
+    --charcoal:#3D3A37;
+    --ink:#171412;
+    --gray-soft:#9CA3AF;
+    --gray-mid:#6B7280;
+    --accent-primary:#1A5C86;
+    --accent-secondary:#D9772B;
+    --navy:#0F3750;
+    --card-bg:#FFFFFF;
+    --card-border:#E5E7EB;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{
+    font-family:'Helvetica Neue','Inter',-apple-system,'Helvetica Neue',Arial,sans-serif;
+    background:var(--bg);
+    color:var(--ink);
+    display:flex;
+    flex-direction:column;
+    min-height:100vh;
+  }
+  main{flex:1 0 auto; max-width:920px; margin:0 auto; width:100%; padding:32px 32px 80px;}
+
+  /* Header */
+  header{
+    position:sticky; top:0; z-index:50;
+    height:56px;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:0 32px;
+    background:var(--bg);
+    border-bottom:1px solid var(--divider);
+  }
+  .logo-lockup{display:flex; flex-direction:column; justify-content:center; height:38px; cursor:pointer;}
+  .logo-eyebrow{font-size:10px; letter-spacing:0.16em; color:var(--gray-mid); text-transform:uppercase;}
+  .logo-word{font-size:15px; color:var(--ink); font-weight:700; letter-spacing:0.01em;}
+  .badge{
+    font-size:11px; letter-spacing:0.1em; text-transform:uppercase; font-weight:700;
+    color:var(--accent-secondary);
+  }
+  #exportBtn{
+    display:none; align-items:center; gap:9px;
+    background:var(--accent-primary); color:var(--bg);
+    border:none; padding:10px 22px; cursor:pointer;
+    font-size:11px; letter-spacing:0.1em; text-transform:uppercase;
+    font-family:inherit; transition:background 0.2s ease;
+  }
+  #exportBtn:hover{background:var(--accent-secondary);}
+
+  /* Toggle */
+  .controls{
+    display:flex; justify-content:center; padding:24px 32px 0;
+    background:var(--bg);
+  }
+  .toggle-group{
+    display:inline-flex; border:1px solid var(--divider); border-radius:999px;
+    background:var(--paper); padding:4px; gap:4px;
+  }
+  .toggle-btn{
+    font-family:inherit; border:none; background:transparent; cursor:pointer;
+    padding:10px 24px; font-size:11px; letter-spacing:0.08em; text-transform:uppercase;
+    color:var(--gray-mid); border-radius:999px; transition:all 0.2s ease;
+  }
+  .toggle-btn.active{ background:var(--accent-primary); color:#fff; }
+
+  /* Card header (segment/persona tags) */
+  .card-header{
+    display:flex; gap:8px; justify-content:center; margin:28px 0 8px;
+  }
+  .tag{
+    font-size:10px; letter-spacing:0.12em; text-transform:uppercase; font-weight:700;
+    padding:6px 14px; border-radius:999px; background:var(--paper); color:var(--accent-primary);
+    border:1px solid var(--divider);
+  }
+
+  .print-header{display:none;}
+
+  /* Sections */
+  .section-card{
+    background:var(--card-bg); border:1px solid var(--card-border); border-radius:10px;
+    padding:24px 28px; margin-bottom:20px;
+    opacity:0; animation:fadeInUp 0.5s ease forwards;
+  }
+  @keyframes fadeInUp{
+    from{opacity:0; transform:translateY(12px);}
+    to{opacity:1; transform:translateY(0);}
+  }
+  .section-title{
+    font-size:13px; font-weight:700; letter-spacing:0.04em; text-transform:uppercase;
+    color:var(--navy); margin-bottom:16px; display:flex; align-items:center; gap:8px;
+  }
+  .body-text{ font-size:14px; line-height:1.65; color:var(--charcoal); }
+
+  .list-row{
+    font-size:14px; line-height:1.6; color:var(--charcoal);
+    padding:10px 0; border-bottom:1px solid var(--rule);
+  }
+  .list-row:last-child{ border-bottom:none; }
+
+  .valueprop-row{
+    font-size:14px; line-height:1.6; color:var(--charcoal);
+    padding:8px 0; padding-left:20px; position:relative;
+  }
+  .valueprop-row::before{
+    content:"✦"; position:absolute; left:0; color:var(--accent-secondary);
+  }
+
+  blockquote.pitch{
+    border-left:3px solid var(--accent-secondary);
+    padding:4px 20px; font-size:15px; line-height:1.7; color:var(--ink); font-style:italic;
+  }
+
+  .diff-card{
+    border:1px solid var(--rule); border-radius:8px; padding:16px 18px; margin-bottom:12px;
+  }
+  .diff-card:last-child{ margin-bottom:0; }
+  .diff-name{ font-size:12px; font-weight:700; color:var(--gray-mid); text-transform:uppercase; letter-spacing:0.05em; margin-bottom:10px; }
+  .diff-row{ display:flex; gap:10px; margin-bottom:8px; align-items:flex-start; }
+  .diff-row:last-child{ margin-bottom:0; }
+  .diff-badge{
+    flex:0 0 auto; font-size:10px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase;
+    padding:4px 10px; border-radius:5px; white-space:nowrap;
+  }
+  .diff-badge.us{ background:var(--accent-primary); color:#fff; }
+  .diff-badge.them{ background:var(--paper); color:var(--gray-mid); }
+  .diff-desc{ font-size:13.5px; line-height:1.55; color:var(--charcoal); }
+
+  .cap-row{
+    display:flex; align-items:flex-start; gap:10px; padding:8px 0; font-size:14px; color:var(--charcoal);
+  }
+  .cap-check{ color:var(--accent-primary); flex:0 0 auto; }
+
+  .usecase-grid{
+    display:grid; grid-template-columns:1fr 1fr; gap:16px;
+  }
+  @media (max-width:640px){ .usecase-grid{ grid-template-columns:1fr; } }
+  .usecase-card{ border:1px solid var(--rule); border-radius:8px; padding:16px 18px; }
+  .usecase-title{ font-size:13.5px; font-weight:700; color:var(--ink); margin-bottom:6px; }
+  .usecase-desc{ font-size:13px; line-height:1.55; color:var(--charcoal); }
+
+  .roi-grid{
+    display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:16px;
+  }
+  .roi-tile{ border:1px solid var(--rule); border-radius:8px; padding:16px; text-align:center; }
+  .roi-label{ font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--gray-mid); margin-bottom:8px; }
+  .roi-metric{ font-size:22px; font-weight:700; color:var(--accent-secondary); margin-bottom:4px; }
+  .roi-value{ font-size:12px; color:var(--charcoal); }
+
+  .dq-row{
+    display:flex; align-items:center; justify-content:space-between; gap:12px;
+    padding:12px 0; border-bottom:1px solid var(--rule); font-size:14px; color:var(--charcoal); cursor:pointer;
+  }
+  .dq-row:last-child{ border-bottom:none; }
+  .dq-copy{ font-size:12px; color:var(--accent-primary); flex:0 0 auto; }
+
+  .obj-card, .faq-card{
+    border:1px solid var(--rule); border-radius:8px; padding:16px 18px; margin-bottom:12px;
+  }
+  .obj-card:last-child, .faq-card:last-child{ margin-bottom:0; }
+  .obj-title, .faq-title{ font-size:14px; font-weight:700; color:var(--accent-secondary); margin-bottom:8px; }
+  .obj-body, .faq-body{ font-size:13.5px; line-height:1.6; color:var(--charcoal); }
+
+  .placeholder{
+    font-size:13px; color:var(--gray-soft); font-style:italic;
+  }
+
+  .empty-state{
+    text-align:center; padding:80px 20px; color:var(--gray-mid); font-size:14px;
+  }
+
+  @media print {
+    header, .controls, .toggle-group, #exportBtn { display: none !important; }
+    body { background: white; color: #1e293b; }
+    .section-card { background: white; border: 1px solid #e2e8f0; box-shadow: none; backdrop-filter: none; }
+    .section-card { page-break-inside: avoid; margin-bottom: 16pt; }
+    .print-header { display: block; font-size: 14pt; font-weight: bold; margin-bottom: 16pt; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo-lockup" onclick="window.location.href='index.html'">
+    <div class="logo-eyebrow">Third Axiom</div>
+    <div class="logo-word">Axiom-Apps</div>
+  </div>
+  <span class="badge">⚔️ Battle Card</span>
+  <button id="exportBtn" onclick="exportPDF()">⬇️ Save as PDF</button>
+</header>
+
+<div class="controls">
+  <div class="toggle-group">
+    <button class="toggle-btn active" onclick="showCard(0)">Director of Ops / Carrier Sales Director</button>
+    <button class="toggle-btn" onclick="showCard(1)">Head of Ops / COO / President</button>
+  </div>
+</div>
+
+<main>
+  <div class="print-header"></div>
+  <div id="cardRoot"><div class="empty-state">Select a battle card above to load.</div></div>
+</main>
+
+<script>
+const COMPANY = "Third Axiom";
+const PRODUCT = "Axiom-Apps";
+const SEGMENT = "Growth-Stage 3PLs & Freight Brokers ($10–99M ARR, 1,000–4,000 shipments/mo)";
+
+const ACTIVE_SECTIONS = [
+  "roleAndResponsibilities","commonChallenges","elevatorPitch","valueProps",
+  "painPoints","differentiators","capabilities","useCases","roi",
+  "discoveryQuestions","objections","faqs"
+];
+
+const BATTLE_CARD_DATA = {
+  [SEGMENT]: {
+    "Director of Ops / Carrier Sales Director": {
+      roleAndResponsibilities: "Owns day-to-day carrier selection and performance decisions. Typically the named \"super user\" who operates Axiom-Apps directly and drives adoption across the ops team.",
+      commonChallenges: [
+        "Picks carriers on gut feel, relationships, or DAT market averages instead of their own performance data",
+        "Exports TMS data to Excel for real analysis — manual, error-prone, riddled with mode-blending and status errors",
+        "Issues like missing customers or margin slides surface too late — often not until the QBR",
+        "No dedicated analyst or data team to build and maintain freight logic in generic BI tools"
+      ],
+      elevatorPitch: "Axiom-Apps is freight intelligence built for how you actually work — it scores your carriers by lane, item, and mode using your own shipment history, not market averages, and flags data-quality issues before they skew your numbers. No integration, no analyst required — just upload your TMS extract and start making confident carrier calls from day one.",
+      valueProps: [
+        "Carrier scorecards by lane, item, mode, or customer — built from your own shipment history",
+        "AI data-quality safeguards catch mode-blending and incomplete statuses before they skew reports",
+        "Freight-native data models — accessorials, freight classes, modes, lanes, equipment type — out of the box",
+        "Self-serve trial, no integration required — just a data upload",
+        "Watch Cards and treemaps flag anomalies automatically, before the QBR"
+      ],
+      painPoints: [
+        "How are carrier decisions made today — gut feel, relationships, or DAT averages?",
+        "Do you export TMS data to Excel for deeper analysis? How often does that catch errors?",
+        "Have you found out about a margin slide or missing customer at the QBR, after it was too late to act?",
+        "Who currently owns freight logic in your BI tool — and what happens if they leave?"
+      ],
+      differentiators: [
+        { name: "Freight-Native Logic vs. Generic BI (Power BI / Tableau)", us: "Data model understands lanes, modes, and accessorials out of the box.", statusQuo: "Someone must manually teach it freight logic — and it breaks when that person leaves." },
+        { name: "AI Data-Quality Safeguards vs. Excel / TMS Reporting", us: "Flags mode-blending and incomplete statuses before they skew results.", statusQuo: "No safeguards — the numbers may already be wrong and no one would know." },
+        { name: "Right-Sized vs. Enterprise Platforms (Enveyo / Loop)", us: "Self-serve, no-integration, priced for $10–99M ARR brokers.", statusQuo: "Sales-led, enterprise implementation built for Fortune 500 shippers." },
+        { name: "Proactive Monitoring vs. Reactive Reporting", us: "Watch Cards and treemaps flag anomalies automatically.", statusQuo: "Issues surface too late — often not until the QBR." }
+      ],
+      capabilities: [
+        "Carrier scorecards by lane, item, mode, and customer",
+        "AI-powered data quality safeguards",
+        "Watch Cards & treemaps for change/anomaly monitoring",
+        "Freight-native data model (accessorials, freight classes, modes, lanes, equipment type)",
+        "Self-serve data upload/extract — no deep integration",
+        "Automated QBR generation (upcoming)"
+      ],
+      useCases: [
+        { title: "Optimizing Carrier Mix by Lane", description: "Score and compare carriers on your own past performance, lane by lane." },
+        { title: "Cleaning Up Blended TL/LTL Analysis", description: "Catch mode-blending and incomplete statuses before they reach a report." },
+        { title: "Rebidding Underperforming Carriers", description: "Renegotiate or reassign lanes with confidence, backed by real data." },
+        { title: "Routing Guides from Scored Performance", description: "Build routing guides grounded in scorecards, not gut feel." },
+        { title: "Early Warning Before the QBR", description: "Get flagged on margin slides or missing customers while there's still time to act." },
+        { title: "Replacing Departing-Analyst Knowledge", description: "Swap tribal BI knowledge for built-in freight logic that doesn't walk out the door." }
+      ],
+      roi: [],
+      discoveryQuestions: [
+        "How are carrier decisions made today — gut feel, relationships, or DAT market averages?",
+        "How often do you export TMS data to Excel for deeper analysis, and what breaks when you do?",
+        "Has a margin slide or missing customer ever surfaced first at a QBR?",
+        "If your BI analyst left tomorrow, what happens to your freight reporting?"
+      ],
+      objections: [
+        { objection: "\"We can do this manually in Excel.\"", response: "Total control means nothing stops mode-blending or in-transit loads counting as delivered — the flexibility you're proud of is exactly what removes any safeguard against bad data. Axiom-Apps keeps the control while adding the safeguards Excel can't." },
+        { objection: "\"Our TMS already has carrier scoring.\"", response: "TMS analytics are built for transactions, not analysis — nothing separates delivered from in-transit or flags a TL/LTL blend. Teams end up exporting to Excel anyway, so the \"free\" reporting isn't actually free — it's deferred cost." },
+        { objection: "\"Power BI/Tableau can do anything with enough configuration.\"", response: "Universal is the opposite of freight-native. Someone has to manually teach it freight logic — usually an analyst you don't have — and if they leave, the dashboards keep looking authoritative while quietly drifting wrong." },
+        { objection: "\"We need to cleanse our data before we use a tool like this.\"", response: "That's exactly the problem Axiom-Apps solves — its AI safeguards surface and flag data-quality issues automatically, so you don't need a separate cleansing project before you can trust your reports." }
+      ],
+      faqs: []
+    },
+    "Head of Ops / COO / President": {
+      roleAndResponsibilities: "The economic buyer who owns budget and signs off on the investment. Cares about margin protection, customer retention, and de-risking the technology spend.",
+      commonChallenges: [
+        "Carrier costs are the single biggest expense — a bad pick quietly erodes already-thin margins",
+        "Gets blindsided at QBRs when shippers ask \"why didn't you tell me sooner?\"",
+        "Wary of committing budget to tools sized for enterprise shippers, or generic BI that needs analyst overhead",
+        "Wants proof before committing — a mainstream buyer, not an early adopter"
+      ],
+      elevatorPitch: "Axiom-Apps is a no-integration freight intelligence platform, sized and priced for growth-stage 3PLs — not enterprise shippers. It surfaces margin risk and carrier performance issues before they hit your QBR, so you catch problems while there's still time to act, and walk into every customer conversation ahead of the story, not behind it.",
+      valueProps: [
+        "Right-sized and priced for growth-stage 3PLs, not enterprise shippers",
+        "Pays for itself within days, not months",
+        "Reduces exposure to bad carrier decisions eating into margin",
+        "Gets ahead of problems before they become a customer-facing credibility hit",
+        "No analyst or data team required to maintain"
+      ],
+      painPoints: [
+        "What's your visibility into carrier-driven margin erosion before it shows up in the P&L?",
+        "How much analyst or IT overhead are you carrying just to maintain reporting?",
+        "What happened at your last QBR when a shipper asked about a problem you hadn't caught yet?",
+        "Are you comfortable with the risk that the underlying data could already be wrong — with no one knowing?"
+      ],
+      differentiators: [
+        { name: "Right-Sized vs. Enterprise Platforms (Enveyo / Loop)", us: "Self-serve, no-integration, priced for $10–99M ARR brokers.", statusQuo: "Sales-led, enterprise implementation and pricing built for Fortune 500 shippers." },
+        { name: "Fast Time-to-Value vs. Generic BI", us: "Self-serve trial, data upload — live in days.", statusQuo: "Requires BI/analyst setup and ongoing maintenance." },
+        { name: "Trustworthy Data vs. Status Quo Reporting", us: "AI safeguards catch bad data before it drives a decision.", statusQuo: "No safeguards — a bad carrier call or customer report may already be wrong." },
+        { name: "Proactive vs. Reactive Visibility", us: "Watch Cards flag margin slides and missing customers automatically.", statusQuo: "Issues surface at the QBR, when the conversation turns to damage control." }
+      ],
+      capabilities: [
+        "Carrier scorecards by lane, item, mode, and customer",
+        "AI-powered data quality safeguards",
+        "Watch Cards & treemaps for change/anomaly monitoring",
+        "Self-serve data upload/extract — no deep integration or IT ticket",
+        "Sized and priced for growth-stage 3PLs, not enterprise shippers",
+        "Automated QBR generation (upcoming)"
+      ],
+      useCases: [
+        { title: "Protecting Margin at Scale", description: "Catch carrier-driven margin erosion before it shows up in the P&L." },
+        { title: "Getting Ahead of the QBR", description: "Walk into shipper conversations with the answer already in hand." },
+        { title: "Right-Sizing Analytics Spend", description: "Avoid paying for enterprise modules built for a company 10x your size." },
+        { title: "Standing Up Analytics Without New Headcount", description: "Get freight-native reporting live without hiring a data scientist or IT support." }
+      ],
+      roi: [],
+      discoveryQuestions: [
+        "What's carrier cost doing to your margins today, and how would you know if it started slipping?",
+        "How much are you spending on analyst or IT overhead just to keep reporting running?",
+        "What's the cost of finding out about a problem from your shipper instead of the other way around?",
+        "Are you being sold enterprise-scale tools built for a company far bigger than yours?"
+      ],
+      objections: [
+        { objection: "\"We're too small for a real analytics platform.\"", response: "Enterprise platforms like Enveyo and Loop are built and priced for Fortune 500 shippers — you'd pay for modules you'll never touch and wait on an onboarding timeline sized for a much bigger company. Axiom-Apps is sized and priced for exactly your scale." },
+        { objection: "\"We'll catch it at the QBR anyway.\"", response: "By the QBR, the conversation has already turned to damage control. Watch Cards flag missing customers, margin slides, and volume changes automatically — so you catch it while there's still time to act, not explain." },
+        { objection: "\"Implementation always takes months, no matter what they promise.\"", response: "Axiom-Apps is self-serve, data upload/extract-based — no deep system integration, no IT ticket. It pays for itself within days, not months." },
+        { objection: "\"We already have a BI tool license.\"", response: "A license isn't the same as freight-native logic. Power BI and Tableau don't know what a lane is or that TL and LTL shouldn't be blended — someone still has to build and maintain that logic manually, usually an analyst you don't have." }
+      ],
+      faqs: []
+    }
+  }
+};
+
+let currentIndex = 0;
+const personas = Object.keys(BATTLE_CARD_DATA[SEGMENT]);
+
+function esc(s){
+  return s;
+}
+
+function renderSectionHTML(key, data){
+  switch(key){
+    case "roleAndResponsibilities":
+      return data.roleAndResponsibilities ? `
+        <div class="section-card">
+          <div class="section-title">🧭 Role &amp; Responsibilities</div>
+          <div class="body-text">${data.roleAndResponsibilities}</div>
+        </div>` : "";
+    case "commonChallenges":
+      return `
+        <div class="section-card">
+          <div class="section-title">⚡ Common Challenges</div>
+          ${data.commonChallenges.map(c => `<div class="list-row">${c}</div>`).join("")}
+        </div>`;
+    case "elevatorPitch":
+      return `
+        <div class="section-card">
+          <div class="section-title">🎯 Elevator Pitch</div>
+          <blockquote class="pitch">${data.elevatorPitch}</blockquote>
+        </div>`;
+    case "valueProps":
+      return `
+        <div class="section-card">
+          <div class="section-title">✦ Value Propositions</div>
+          ${data.valueProps.map(v => `<div class="valueprop-row">${v}</div>`).join("")}
+        </div>`;
+    case "painPoints":
+      return `
+        <div class="section-card">
+          <div class="section-title">🔍 Pain Points to Uncover</div>
+          ${data.painPoints.map(p => `<div class="list-row">${p}</div>`).join("")}
+        </div>`;
+    case "differentiators":
+      return `
+        <div class="section-card">
+          <div class="section-title">🏆 Top Differentiators</div>
+          ${data.differentiators.map(d => `
+            <div class="diff-card">
+              <div class="diff-name">${d.name}</div>
+              <div class="diff-row"><span class="diff-badge us">${PRODUCT}</span><span class="diff-desc">${d.us}</span></div>
+              <div class="diff-row"><span class="diff-badge them">Status Quo</span><span class="diff-desc">${d.statusQuo}</span></div>
+            </div>`).join("")}
+        </div>`;
+    case "capabilities":
+      return `
+        <div class="section-card">
+          <div class="section-title">👉 More Capabilities</div>
+          ${data.capabilities.map(c => `<div class="cap-row"><span class="cap-check">✅</span><span>${c}</span></div>`).join("")}
+        </div>`;
+    case "useCases":
+      return `
+        <div class="section-card">
+          <div class="section-title">🎯 Key Use Cases</div>
+          <div class="usecase-grid">
+            ${data.useCases.map(u => `
+              <div class="usecase-card">
+                <div class="usecase-title">${u.title}</div>
+                <div class="usecase-desc">${u.description}</div>
+              </div>`).join("")}
+          </div>
+        </div>`;
+    case "roi":
+      return `
+        <div class="section-card">
+          <div class="section-title">📊 ROI / Measurable Benefits</div>
+          ${data.roi.length ? `<div class="roi-grid">${data.roi.map(r => `
+            <div class="roi-tile">
+              <div class="roi-label">${r.label}</div>
+              <div class="roi-metric">${r.metric}</div>
+              <div class="roi-value">${r.value}</div>
+            </div>`).join("")}</div>` : `<div class="placeholder">Coming soon — hard ROI metrics pending case study data.</div>`}
+        </div>`;
+    case "discoveryQuestions":
+      return `
+        <div class="section-card">
+          <div class="section-title">💬 Discovery Questions</div>
+          ${data.discoveryQuestions.map((q,i) => `
+            <div class="dq-row" onclick="copyQuestion(this)" data-q="${q.replace(/"/g,'&quot;')}">
+              <span>${q}</span><span class="dq-copy">⧉ Copy</span>
+            </div>`).join("")}
+        </div>`;
+    case "objections":
+      return `
+        <div class="section-card">
+          <div class="section-title">🛡️ Objection Handling</div>
+          ${data.objections.map(o => `
+            <div class="obj-card">
+              <div class="obj-title">${o.objection}</div>
+              <div class="obj-body">${o.response}</div>
+            </div>`).join("")}
+        </div>`;
+    case "faqs":
+      return `
+        <div class="section-card">
+          <div class="section-title">❓ FAQs</div>
+          ${data.faqs.length ? data.faqs.map(f => `
+            <div class="faq-card">
+              <div class="faq-title">${f.question}</div>
+              <div class="faq-body">${f.answer}</div>
+            </div>`).join("") : `<div class="placeholder">Coming soon.</div>`}
+        </div>`;
+    default:
+      return "";
+  }
+}
+
+function copyQuestion(el){
+  const q = el.getAttribute('data-q');
+  navigator.clipboard.writeText(q).then(() => {
+    const copyEl = el.querySelector('.dq-copy');
+    const original = copyEl.textContent;
+    copyEl.textContent = 'Copied!';
+    setTimeout(() => { copyEl.textContent = original; }, 1200);
+  });
+}
+
+function renderBattleCard(persona){
+  const data = BATTLE_CARD_DATA[SEGMENT][persona];
+  if(!data) return;
+  const root = document.getElementById('cardRoot');
+  let html = `
+    <div class="card-header">
+      <span class="tag">${SEGMENT}</span>
+      <span class="tag">${persona}</span>
+    </div>`;
+  ACTIVE_SECTIONS.forEach((key, i) => {
+    const sectionHtml = renderSectionHTML(key, data);
+    if(sectionHtml){
+      html += sectionHtml.replace('class="section-card"', `class="section-card" style="animation-delay:${i*80}ms"`);
+    }
+  });
+  root.innerHTML = html;
+  document.querySelector('.print-header').textContent = `${COMPANY} — ${PRODUCT}: ${SEGMENT} / ${persona}`;
+  document.getElementById('exportBtn').style.display = 'inline-flex';
+}
+
+function showCard(index){
+  currentIndex = index;
+  document.querySelectorAll('.toggle-btn').forEach((btn,i) => {
+    btn.classList.toggle('active', i === index);
+  });
+  renderBattleCard(personas[index]);
+}
+
+function exportPDF(){
+  window.print();
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  showCard(0);
+});
+</script>
+
+</body>
+</html>
